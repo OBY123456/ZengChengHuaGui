@@ -10,15 +10,6 @@ public class baseChildPanel : MonoBehaviour
 {
     public CanvasGroup CanvasGroup;
 
-    //public CanvasGroup[] ChildGroups;
-
-    //public Vector2[] LocalVector2;
-
-    //public Vector2[] TargetVector2;
-
-    //图片移动到目标点的时间
-    //public float AnimaTime = 2.0f;
-
     //CanvasGroup打开动画的时间
     public float Times = 2.0f;
 
@@ -32,22 +23,12 @@ public class baseChildPanel : MonoBehaviour
     private void Awake()
     {
         CanvasGroup = transform.GetComponent<CanvasGroup>();
-        //ChildGroups = transform.Find("ChildGroups").GetComponentsInChildren<CanvasGroup>();
         buttons[0] = FindTool.FindChildComponent<Button>(transform, "LeftButton");
         buttons[1] = FindTool.FindChildComponent<Button>(transform, "RightButton");
 
         btnsCanvas[0] = FindTool.FindChildComponent<CanvasGroup>(transform, "LeftButton");
         btnsCanvas[1] = FindTool.FindChildComponent<CanvasGroup>(transform, "RightButton");
-        //int childCount = transform.childCount;
-        //if (childCount >= 1)
-        //{
-        //    images = new RectTransform[childCount];
-        //    LocalVector2 = new Vector2[childCount];
-        //    for (int i = 0; i < childCount; i++)
-        //    {
-        //        LocalVector2[i] = images[i].localPosition;
-        //    }
-        //}
+
         Reset();
     }
 
@@ -55,7 +36,6 @@ public class baseChildPanel : MonoBehaviour
     {
         if(Config.Instance)
         {
-            //AnimaTime = Config.Instance.configData.AnimaTime;
             Times = Config.Instance.configData.PanelOpenTime; 
         }
     }
@@ -64,49 +44,18 @@ public class baseChildPanel : MonoBehaviour
     {
         transform.DOKill();
         CanvasGroup.blocksRaycasts = true;
-        CanvasGroup.DOFade(1, Times).OnComplete(() => {
-            //if (TargetVector2.Length > 0)
-            //{
-            //    for (int i = 0; i < LocalVector2.Length; i++)
-            //    {
-            //        images[i].DOAnchorPos(TargetVector2[i], AnimaTime).SetEase(Ease.Linear);
-            //    }
-            //}
-            //if (ChildGroups.Length > 0)
-            //foreach (var item in ChildGroups)
-            //{
-            //    item.Open(AnimaTime);
-            //}
-        });
+        CanvasGroup.DOFade(1, Times);
     }
 
     public void Hide()
     {
         transform.DOKill();
         CanvasGroup.blocksRaycasts = false;
-        CanvasGroup.DOFade(0, Times).OnComplete(() => {
-            //if (TargetVector2.Length > 0)
-            //{
-            //    for (int i = 0; i < LocalVector2.Length; i++)
-            //    {
-            //        images[i].localPosition = LocalVector2[i];
-            //    }
-            //}
-            //if (ChildGroups.Length > 0)
-            //foreach (var item in ChildGroups)
-            //{
-            //    item.Hide();
-            //}
-        });
+        CanvasGroup.DOFade(0, Times);
     }
 
     private void Reset()
     {
         CanvasGroup.Hide();
-        //if (ChildGroups.Length > 0)
-        //foreach (var item in ChildGroups)
-        //{
-        //    item.Hide();
-        //}
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MTFrame;
+using System;
+using UnityEngine.UI;
 
 public class BaseUIPanel : BasePanel
 {
@@ -13,72 +15,134 @@ public class BaseUIPanel : BasePanel
 
     int Count = 0;
 
+    public Dynasty dynasty;
+
+    private List<Texture2D> texture = new List<Texture2D>();
+
     protected override void Start()
     {
         base.Start();
-        if(Config.Instance)
+
+        Transform trans = FindTool.FindChildNode(transform, "ChildPanels");
+
+        if (Config.Instance)
         {
             Interval = Config.Instance.configData.PanelSwitchTime;
             _Interval = Interval /*+ Config.Instance.configData.AnimaTime*/ + Config.Instance.configData.PanelOpenTime;
         }
-        Reset();
-    }
 
-    public override void InitFind()
-    {
-        base.InitFind();
-        ChildPanels = FindTool.FindChildNode(transform, "ChildPanels").GetComponentsInChildren<baseChildPanel>();
-    }
-
-    public override void InitEvent()
-    {
-        base.InitEvent();
-
-        if(ChildPanels.Length == 1)
+        if(PicControl.Instance)
         {
-            ChildPanels[0].btnsCanvas[0].Hide();
-            ChildPanels[0].btnsCanvas[1].Hide();
-        }
-        else
-        {
-            for (int i = 0; i < ChildPanels.Length; i++)
+            texture = PicControl.Instance.PicGroup[Convert.ToInt32(dynasty)];
+            if (texture.Count > 0 && PoolManager.Instance)
             {
-                if (i == 0)
+                for (int i = 0; i < texture.Count; i++)
                 {
-                    ChildPanels[0].btnsCanvas[0].Hide();
+                    GameObject obj = PoolManager.Instance.GetPool(MTFrame.MTPool.PoolType.GenericProp);
+                    obj.transform.SetParent(trans);
+                    obj.GetComponent<RectTransform>().offsetMin = Vector2.zero;
+                    obj.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+                    obj.GetComponent<RawImage>().texture = texture[i];
                 }
-                else if(i == ChildPanels.Length - 1)
-                {
-                    ChildPanels[i].btnsCanvas[1].Hide();
-                }
+            }
 
-                if (ChildPanels[i].buttons[0] != null)
-                {
-                    ChildPanels[i].buttons[0].onClick.AddListener(() => {
-                        StopCoroutine("ChildPanelSwitch");
-                        Count = Count - 2;
-                        StartCoroutine("ChildPanelSwitch");
-                    });
-                }
+            ChildPanels = trans.GetComponentsInChildren<baseChildPanel>();
 
-                if (ChildPanels[i].buttons[1] != null)
+            if (ChildPanels.Length == 1)
+            {
+                ChildPanels[0].btnsCanvas[0].Hide();
+                ChildPanels[0].btnsCanvas[1].Hide();
+            }
+            else
+            {
+                for (int i = 0; i < ChildPanels.Length; i++)
                 {
-                    ChildPanels[i].buttons[1].onClick.AddListener(() => {
-                        StopCoroutine("ChildPanelSwitch");
-                        StartCoroutine("ChildPanelSwitch");
-                    });
+                    if (i == 0)
+                    {
+                        ChildPanels[0].btnsCanvas[0].Hide();
+                    }
+                    else if (i == ChildPanels.Length - 1)
+                    {
+                        ChildPanels[i].btnsCanvas[1].Hide();
+                    }
+
+                    if (ChildPanels[i].buttons[0] != null)
+                    {
+                        ChildPanels[i].buttons[0].onClick.AddListener(() => {
+                            StopCoroutine("ChildPanelSwitch");
+                            Count = Count - 2;
+                            StartCoroutine("ChildPanelSwitch");
+                        });
+                    }
+
+                    if (ChildPanels[i].buttons[1] != null)
+                    {
+                        ChildPanels[i].buttons[1].onClick.AddListener(() => {
+                            StopCoroutine("ChildPanelSwitch");
+                            StartCoroutine("ChildPanelSwitch");
+                        });
+                    }
                 }
             }
         }
-
-
+        
+        Reset();
     }
+
+    //public override void InitFind()
+    //{
+    //    base.InitFind();
+    //    ChildPanels = FindTool.FindChildNode(transform, "ChildPanels").GetComponentsInChildren<baseChildPanel>();
+    //}
+
+    //public override void InitEvent()
+    //{
+    //    base.InitEvent();
+
+    //    if(ChildPanels.Length == 1)
+    //    {
+    //        ChildPanels[0].btnsCanvas[0].Hide();
+    //        ChildPanels[0].btnsCanvas[1].Hide();
+    //    }
+    //    else
+    //    {
+    //        for (int i = 0; i < ChildPanels.Length; i++)
+    //        {
+    //            if (i == 0)
+    //            {
+    //                ChildPanels[0].btnsCanvas[0].Hide();
+    //            }
+    //            else if(i == ChildPanels.Length - 1)
+    //            {
+    //                ChildPanels[i].btnsCanvas[1].Hide();
+    //            }
+
+    //            if (ChildPanels[i].buttons[0] != null)
+    //            {
+    //                ChildPanels[i].buttons[0].onClick.AddListener(() => {
+    //                    StopCoroutine("ChildPanelSwitch");
+    //                    Count = Count - 2;
+    //                    StartCoroutine("ChildPanelSwitch");
+    //                });
+    //            }
+
+    //            if (ChildPanels[i].buttons[1] != null)
+    //            {
+    //                ChildPanels[i].buttons[1].onClick.AddListener(() => {
+    //                    StopCoroutine("ChildPanelSwitch");
+    //                    StartCoroutine("ChildPanelSwitch");
+    //                });
+    //            }
+    //        }
+    //    }
+
+
+    //}
 
     public override void Open()
     {
         base.Open();
-        if(ChildPanels.Length > 0)
-        StartCoroutine("ChildPanelSwitch");
+        StartCoroutine(Open2());
     }
 
     public override void Hide()
@@ -119,5 +183,13 @@ public class BaseUIPanel : BasePanel
     private void Reset()
     {
         Count = 0;
+    }
+
+    private IEnumerator Open2()
+    {
+        yield return new WaitForEndOfFrame();
+        if (ChildPanels.Length > 0)
+            StartCoroutine("ChildPanelSwitch");
+
     }
 }

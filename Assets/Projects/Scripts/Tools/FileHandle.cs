@@ -94,7 +94,7 @@ public class FileHandle
             {
                 filePaths.Add(dirs[j]);
             }
-            Debug.Log(ImageType[i] + ":一共读取到" + dirs.Length + "张图片");
+            //Debug.Log(ImageType[i] + ":一共读取到" + dirs.Length + "张图片");
         }
         return filePaths;
     }

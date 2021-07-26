@@ -1,1 +1,1 @@
-{"Backtime":120.0,"HuaGui_BackTime":15.0,"PanelSwitchTime":60.0,"PanelOpenTime":2.0,"UDPPort":8000,"UDPip":"127.0.0.1","TcpPort":10088,"Tcpip":"127.0.0.1","FirstPos":0,"isCursor":false,"Code":"","秦汉春秋":0,"晋代玄风":1,"南朝密码":2,"隋唐沧桑":3,"明清印记":4,"宋元气象":5,"民国故事":6,"抗战计略":7}
+{"Backtime":120.0,"HuaGui_BackTime":15.0,"PanelSwitchTime":60.0,"PanelOpenTime":2.0,"UDPPort":8000,"UDPip":"127.0.0.1","TcpPort":10088,"Tcpip":"127.0.0.1","FirstPos":0,"isCursor":false,"Code":"aabb","秦汉春秋":0,"晋代玄风":1,"南朝密码":2,"隋唐沧桑":3,"明清印记":4,"宋元气象":5,"民国故事":6,"抗战计略":7}
